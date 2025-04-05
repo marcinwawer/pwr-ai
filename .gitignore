@@ -1,0 +1,40 @@
+# 🔹 Ignore system files (macOS)
+.DS_Store
+.AppleDouble
+.LSOverride
+*.icloud
+Spotlight-V100
+.metadata_never_index
+**/.DS_Store
+.fseventsd
+
+# 🔹 Ignore editor and IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+
+# 🔹 Ignore Xcode files (if using macOS)
+*.xcworkspace
+*.xcuserstate
+*.xcuserdatad/
+*.xcscmblueprint
+
+# 🔹 Ignore global virtual environment
+venv/
+
+# 🔹 Ignore local virtual environments in task_X/
+**/.venv/
+
+# 🔹 Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 🔹 Ignore environment variables files
+.env
+
+# sh scripts
+run_ecommerce_service.sh
