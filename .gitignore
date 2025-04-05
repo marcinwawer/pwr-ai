@@ -36,5 +36,5 @@ __pycache__/
 # 🔹 Ignore environment variables files
 .env
 
-# sh scripts
-run_ecommerce_service.sh
+# data file
+connection_graph.csv
