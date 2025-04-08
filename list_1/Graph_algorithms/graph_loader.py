@@ -2,11 +2,15 @@ from datetime import datetime, timedelta
 import csv
 from Config.constants import FILE_NAME
 
+
+
 def parse_extended_time(time_str):
     h, m, s = map(int, time_str.split(':'))
     extra_days, hour = divmod(h, 24)
     base_date = datetime(1900, 1, 1) 
     return base_date + timedelta(days=extra_days, hours=hour, minutes=m, seconds=s)
+
+
 
 def load_weighted_graph(criterion):
     if criterion not in ["time", "t", "change", "c"]:

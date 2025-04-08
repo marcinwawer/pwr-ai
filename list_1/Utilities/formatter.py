@@ -1,6 +1,8 @@
 import pandas as pd
 from Config.constants import TIME_COST_PER_SEC, CHANGE_COST_PER_CHANGE
 
+
+
 def format_schedule_df(path, criterion, start_time=None):
     pd.set_option('display.width', None)       
     pd.set_option('display.max_columns', None)
@@ -47,3 +49,14 @@ def format_schedule_df(path, criterion, start_time=None):
     df = df[['line', 'departure_time', 'start_stop', 'arrival_time', 'end_stop', 'cost']]
     
     return df
+
+
+
+def format_tabu_route_df(best_segments, criterion, start_time):
+    full_path = []
+    for seg in best_segments:
+        if seg[2] is not None:
+            full_path.extend(seg[2])
+
+    df_route = format_schedule_df(full_path, criterion, start_time)
+    return df_route

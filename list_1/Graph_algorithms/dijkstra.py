@@ -1,5 +1,7 @@
 import heapq, time
-from Config.constants import MIN_CHANGE_TIME
+from Config.constants import MIN_CHANGE_TIME, TIME_COST_PER_SEC
+
+
 
 def dijkstra_min_time(graph, start_stop, end_stop, start_time):
     t0 = time.time()  
@@ -12,7 +14,7 @@ def dijkstra_min_time(graph, start_stop, end_stop, start_time):
 
         if current_stop == end_stop:
             run_time = time.time() - t0  
-            return (current_time - start_time).total_seconds(), path, run_time
+            return (current_time - start_time).total_seconds() * TIME_COST_PER_SEC, path, run_time
         
         if current_stop not in graph:
             continue

@@ -1,6 +1,8 @@
 import csv, heapq, math, time
 from Config.constants import FILE_NAME, TIME_COST_PER_SEC, CHANGE_COST_PER_CHANGE, MIN_CHANGE_TIME
 
+
+
 def haversine(lat1, lon1, lat2, lon2):
     R = 6371000  
     phi1 = math.radians(lat1)
@@ -10,6 +12,8 @@ def haversine(lat1, lon1, lat2, lon2):
     a = math.sin(delta_phi / 2)**2 + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2)**2
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return R * c
+
+
 
 def load_stop_coords():
     stop_coords = {}
@@ -140,6 +144,7 @@ def a_star_min_changes(graph, start_stop, end_stop, start_time):
     return None, None, run_time
 
 
+
 """
 1.	Beam Search:
 Przed pobraniem elementu z kolejki (open_set) sprawdzamy, czy liczba stanów przekracza zadany beam_width (np. 100). Jeśli tak, ograniczamy open_set do beam_width najlepszych (najmniejszych według f) stanów. Dzięki temu zmniejszamy liczbę rozpatrywanych stanów, co może znacząco przyspieszyć obliczenia – choć kosztem potencjalnie suboptymalnego rozwiązania, jeśli optymalna ścieżka została odrzucona.
@@ -153,12 +158,10 @@ Ograniczenie liczby rozpatrywanych węzłów (beam_width) może zmniejszyć czas
 def a_star_min_changes_beam(graph, start_stop, end_stop, start_time, beam_width=100):
     t0 = time.time()
     open_set = []
-    # Element w open_set: (f, g, current_stop, current_time, current_line, path)
     heapq.heappush(open_set, (0, 0, start_stop, start_time, None, []))
     best = {}  
 
     while open_set:
-        # Ograniczanie liczby rozpatrywanych stanów do beam_width
         if len(open_set) > beam_width:
             open_set = heapq.nsmallest(beam_width, open_set)
             heapq.heapify(open_set)
@@ -177,7 +180,6 @@ def a_star_min_changes_beam(graph, start_stop, end_stop, start_time, beam_width=
                 new_line = conn['line']
                 new_changes = g
 
-                # Sprawdzamy, czy następuje przesiadka; jeśli tak, wymagamy minimalnego czasu oczekiwania
                 if current_line is not None and new_line != current_line:
                     wait_delta = conn['departure_time'] - current_time
                     if wait_delta < MIN_CHANGE_TIME:
@@ -193,7 +195,7 @@ def a_star_min_changes_beam(graph, start_stop, end_stop, start_time, beam_width=
                         continue
 
                 best[state] = (new_changes, new_time)
-                new_f = new_changes  # heurystyka pozostaje zerowa (lub możesz spróbować wprowadzić bardziej zaawansowaną heurystykę)
+                new_f = new_changes 
                 new_path = path + [conn]
                 heapq.heappush(open_set, (new_f, new_changes, conn['end_stop'], new_time, new_line, new_path))
     
