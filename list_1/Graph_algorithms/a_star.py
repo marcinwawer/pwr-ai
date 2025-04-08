@@ -33,6 +33,7 @@ def load_stop_coords():
     return stop_coords
 
 
+
 def a_star_min_time(graph, stop_coords, start_stop, end_stop, start_time, max_speed=15):
     t0 = time.time() 
 
@@ -92,6 +93,8 @@ def a_star_min_time(graph, stop_coords, start_stop, end_stop, start_time, max_sp
     run_time = time.time() - t0  
     return None, None, run_time
 
+
+
 def a_star_min_changes(graph, start_stop, end_stop, start_time):
     t0 = time.time()
 
@@ -130,6 +133,67 @@ def a_star_min_changes(graph, start_stop, end_stop, start_time):
 
                 best[state] = (new_changes, new_time)
                 new_f = new_changes  
+                new_path = path + [conn]
+                heapq.heappush(open_set, (new_f, new_changes, conn['end_stop'], new_time, new_line, new_path))
+    
+    run_time = time.time() - t0  
+    return None, None, run_time
+
+
+"""
+1.	Beam Search:
+Przed pobraniem elementu z kolejki (open_set) sprawdzamy, czy liczba stanów przekracza zadany beam_width (np. 100). Jeśli tak, ograniczamy open_set do beam_width najlepszych (najmniejszych według f) stanów. Dzięki temu zmniejszamy liczbę rozpatrywanych stanów, co może znacząco przyspieszyć obliczenia – choć kosztem potencjalnie suboptymalnego rozwiązania, jeśli optymalna ścieżka została odrzucona.
+
+2.	Heurystyka:
+W Twoim algorytmie dla minimalizacji zmian (przesiadek) heurystyka była ustawiona na 0, czyli f = g. Możesz eksperymentować z dodaniem prostej heurystyki, która oszacowuje minimalną liczbę dodatkowych przesiadek potrzebnych do osiągnięcia celu, ale zwykle trudno taką heurystykę dobrze opracować dla tego problemu.
+
+3.	Efekt:
+Ograniczenie liczby rozpatrywanych węzłów (beam_width) może zmniejszyć czas obliczeń. Dodatkowo, modyfikacje te mogą wpłynąć na wartość funkcji kosztu rozwiązania – jeśli uda się szybciej odrzucić drogi o wysokim koszcie, istnieje szansa, że algorytm znajdzie rozwiązanie o niższym koszcie.
+"""
+def a_star_min_changes_beam(graph, start_stop, end_stop, start_time, beam_width=100):
+    t0 = time.time()
+    open_set = []
+    # Element w open_set: (f, g, current_stop, current_time, current_line, path)
+    heapq.heappush(open_set, (0, 0, start_stop, start_time, None, []))
+    best = {}  
+
+    while open_set:
+        # Ograniczanie liczby rozpatrywanych stanów do beam_width
+        if len(open_set) > beam_width:
+            open_set = heapq.nsmallest(beam_width, open_set)
+            heapq.heapify(open_set)
+
+        f, g, current_stop, current_time, current_line, path = heapq.heappop(open_set)
+        
+        if current_stop == end_stop:
+            run_time = time.time() - t0
+            return g, path, run_time
+        
+        if current_stop not in graph:
+            continue
+
+        for conn in graph[current_stop]:
+            if conn['departure_time'] >= current_time:
+                new_line = conn['line']
+                new_changes = g
+
+                # Sprawdzamy, czy następuje przesiadka; jeśli tak, wymagamy minimalnego czasu oczekiwania
+                if current_line is not None and new_line != current_line:
+                    wait_delta = conn['departure_time'] - current_time
+                    if wait_delta < MIN_CHANGE_TIME:
+                        continue 
+                    new_changes += CHANGE_COST_PER_CHANGE
+                
+                new_time = conn['arrival_time']
+                state = (conn['end_stop'], new_line)
+
+                if state in best:
+                    best_changes, best_time = best[state]
+                    if new_changes > best_changes or (new_changes == best_changes and new_time >= best_time):
+                        continue
+
+                best[state] = (new_changes, new_time)
+                new_f = new_changes  # heurystyka pozostaje zerowa (lub możesz spróbować wprowadzić bardziej zaawansowaną heurystykę)
                 new_path = path + [conn]
                 heapq.heappush(open_set, (new_f, new_changes, conn['end_stop'], new_time, new_line, new_path))
     
