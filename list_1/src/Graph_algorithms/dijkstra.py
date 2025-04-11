@@ -1,5 +1,5 @@
 import heapq, time
-from Config.constants import MIN_CHANGE_TIME, TIME_COST_PER_SEC
+from src.Config.constants import MIN_CHANGE_TIME, TIME_COST_PER_SEC
 
 
 

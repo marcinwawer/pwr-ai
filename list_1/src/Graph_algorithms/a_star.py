@@ -1,5 +1,5 @@
 import csv, heapq, math, time
-from Config.constants import FILE_NAME, TIME_COST_PER_SEC, CHANGE_COST_PER_CHANGE, MIN_CHANGE_TIME
+from src.Config.constants import FILE_NAME, TIME_COST_PER_SEC, CHANGE_COST_PER_CHANGE, MIN_CHANGE_TIME
 
 
 
@@ -145,16 +145,6 @@ def a_star_min_changes(graph, start_stop, end_stop, start_time):
 
 
 
-"""
-1.	Beam Search:
-Przed pobraniem elementu z kolejki (open_set) sprawdzamy, czy liczba stanów przekracza zadany beam_width (np. 100). Jeśli tak, ograniczamy open_set do beam_width najlepszych (najmniejszych według f) stanów. Dzięki temu zmniejszamy liczbę rozpatrywanych stanów, co może znacząco przyspieszyć obliczenia – choć kosztem potencjalnie suboptymalnego rozwiązania, jeśli optymalna ścieżka została odrzucona.
-
-2.	Heurystyka:
-W Twoim algorytmie dla minimalizacji zmian (przesiadek) heurystyka była ustawiona na 0, czyli f = g. Możesz eksperymentować z dodaniem prostej heurystyki, która oszacowuje minimalną liczbę dodatkowych przesiadek potrzebnych do osiągnięcia celu, ale zwykle trudno taką heurystykę dobrze opracować dla tego problemu.
-
-3.	Efekt:
-Ograniczenie liczby rozpatrywanych węzłów (beam_width) może zmniejszyć czas obliczeń. Dodatkowo, modyfikacje te mogą wpłynąć na wartość funkcji kosztu rozwiązania – jeśli uda się szybciej odrzucić drogi o wysokim koszcie, istnieje szansa, że algorytm znajdzie rozwiązanie o niższym koszcie.
-"""
 def a_star_min_changes_beam(graph, start_stop, end_stop, start_time, beam_width=100):
     t0 = time.time()
     open_set = []

@@ -38,3 +38,6 @@ __pycache__/
 
 # data file
 connection_graph.csv
+
+# jupyter files
+**/.ipynb_checkpoints/
